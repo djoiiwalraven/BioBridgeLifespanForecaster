@@ -1,18 +1,14 @@
-package application;
+package java.application;
 	
 import javafx.application.Application;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.Cursor;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+import javafx.scene.Cursor;
 import javafx.scene.input.MouseButton;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.Screen;
-import javafx.stage.StageStyle;
-import javafx.scene.chart.PieChart;
-import javafx.scene.layout.VBox;
 
 public class Main extends Application {
 	
@@ -29,11 +25,10 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		
 		try {
-			primaryStage.setTitle("Bio-Bridge Lifespan Forecaster");
-			
-			BorderPane root = new BorderPane();
+			//FXML
+			Parent root = FXMLLoader.load(getClass().getResource("Test.fxml"));
 			root.setStyle("-fx-background-color:rgb(186,153,122,0.7);");
-			
+			primaryStage.setTitle("Bio-Bridge Lifespan Forecaster");
 			
 			// Responsive Resolution on start-up
 	        int sceneWidth = 0;
@@ -52,21 +47,12 @@ public class Main extends Application {
 	            sceneWidth = 1800;
 	            sceneHeight = 920;
 	        }
-	        // Scene
+			
+			 // Scene
 			Scene scene = new Scene(root,sceneWidth,sceneHeight);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			
-			
-			Text text = new Text();
-			text.setText("Hello World!");
-			text.setX(50);
-			text.setY(50);
-			
-			root.getChildren().add(text);
-			
-			
-			
-			// Responsive resolution on drag
+			// Responsive scene resolution on drag  (replace primaryStage w/ stage)?
 	        scene.setOnMousePressed(m -> {
 	            if (m.getButton() == MouseButton.PRIMARY) {
 	                scene.setCursor(Cursor.MOVE);

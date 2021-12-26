@@ -1,4 +1,4 @@
-package Utils;
+package java.utils;
 
 public class Struct {
 	private String[] arr;
