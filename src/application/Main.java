@@ -1,4 +1,4 @@
-package java.application;
+package application;
 	
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -9,6 +9,8 @@ import javafx.stage.Stage;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Screen;
+
+import utils.ReadCSV;
 
 public class Main extends Application {
 	
@@ -26,7 +28,7 @@ public class Main extends Application {
 		
 		try {
 			//FXML
-			Parent root = FXMLLoader.load(getClass().getResource("Test.fxml"));
+			Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
 			root.setStyle("-fx-background-color:rgb(186,153,122,0.7);");
 			primaryStage.setTitle("Bio-Bridge Lifespan Forecaster");
 			
@@ -50,7 +52,7 @@ public class Main extends Application {
 			
 			 // Scene
 			Scene scene = new Scene(root,sceneWidth,sceneHeight);
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			scene.getStylesheets().add(getClass().getResource("Main.css").toExternalForm());
 			
 			// Responsive scene resolution on drag  (replace primaryStage w/ stage)?
 	        scene.setOnMousePressed(m -> {
@@ -81,6 +83,8 @@ public class Main extends Application {
 	}
 	
 	public static void main(String[] args) {
+		ReadCSV.read("src/data/201912-opzetstukken.csv");
+		
 		launch(args);
 	}
 }
