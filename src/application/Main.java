@@ -10,7 +10,7 @@ import javafx.scene.Cursor;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Screen;
 
-import utils.ReadCSV;
+import utils.ReadCSVapache;
 
 public class Main extends Application {
 	
@@ -83,7 +83,7 @@ public class Main extends Application {
 	}
 	
 	public static void main(String[] args) {
-		//ReadCSV.read("src/data/201912-opzetstukken.csv");
+		ReadCSVapache.read("src/data/201912-opzetstukken.csv");
 		
 		launch(args);
 	}

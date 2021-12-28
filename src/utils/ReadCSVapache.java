@@ -14,7 +14,7 @@ import org.apache.commons.csv.CSVRecord;
 
 
 
-public class readCSVapache {
+public class ReadCSVapache {
 	public static void read(String file) {
 		try {
 			Reader reader= Files.newBufferedReader(Paths.get(file));// create reader to read files
