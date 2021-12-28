@@ -11,6 +11,7 @@ import javafx.scene.input.MouseButton;
 import javafx.stage.Screen;
 
 import utils.ReadCSVapache;
+import utils.ReadFolder;
 
 public class Main extends Application {
 	
@@ -83,8 +84,8 @@ public class Main extends Application {
 	}
 	
 	public static void main(String[] args) {
-		ReadCSVapache.read("src/data/201912-opzetstukken.csv");
+		ReadFolder.read("src/data");
 		
-		launch(args);
+		//launch(args);
 	}
 }
