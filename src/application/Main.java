@@ -10,19 +10,34 @@ import javafx.scene.Cursor;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Screen;
 
+//MALC
+import domain.MultipleAxesLineChart;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+import utils.PrepareSeries;
+
 import utils.ReadCSVapache;
 import utils.ReadFolder;
 
 public class Main extends Application {
 	
+	// Screen setup
 	int screenWidth = (int) Screen.getPrimary().getBounds().getWidth();
     int screenHeight = (int) Screen.getPrimary().getBounds().getHeight();
-
     Stage stage;
     Scene scene;
-
     int initialX;
     int initialY;
+    
+    //MALC
+    public static final int X_DATA_COUNT = 10;
     
 	@Override
 	public void start(Stage primaryStage) {
@@ -38,21 +53,45 @@ public class Main extends Application {
 	        int sceneHeight = 0;
 	        
 	        if (screenWidth <= 800 && screenHeight <= 600) {
-	        	System.out.println("1");
 	            sceneWidth = 600;
 	            sceneHeight = 350;
 	        } else if (screenWidth <= 1280 && screenHeight <= 768) {
-	        	System.out.println("2");
 	            sceneWidth = 800;
 	            sceneHeight = 450;
 	        } else if (screenWidth <= 1920 && screenHeight <= 1080) {
-	        	System.out.println("3");
 	            sceneWidth = 1800;
 	            sceneHeight = 920;
 	        }
+	        
+	        //MALC
+	        NumberAxis xAxis = new NumberAxis(0, X_DATA_COUNT, 1);
+	        NumberAxis yAxis = new NumberAxis();
+	        xAxis.setLabel("years");
+	        
+	        
+	        //chart.addSeries(PrepareSeries.prepare(<name>, <dimensions y-axis>,<line function>) <color>); 
+	        List<String> lowTraffic = new ArrayList<String>();
+	        List<Double> strains = new ArrayList<Double>();
+	        lowTraffic = ReadCSVapache.readTraffic("/Volumes/MacOS/PAD/data/traffic/verkeer.csv", 0,1,2,3);
+			strains = ReadCSVapache.read("/Volumes/MacOS/PAD/data/strain-group5/strain#20501.csv", 2, lowTraffic, 0);
+	        
+			for(Double s : strains) {
+				System.out.println(s);
+			}
+			
+	        LineChart baseChart = new LineChart(xAxis, yAxis);
+	        baseChart.getData().add(PrepareSeries.dataPoints("Strain %", strains, 10));
+	        MultipleAxesLineChart chart = new MultipleAxesLineChart(baseChart, Color.RED);
+	        chart.addSeries(PrepareSeries.dataPoints("Lifespan", strains, 10),Color.BLUE);
+	        
+	        
+	        BorderPane bp = new BorderPane();
+	        bp.setCenter(chart);
+	        bp.setBottom(chart.getLegend());
+	        
 			
 			 // Scene
-			Scene scene = new Scene(root,sceneWidth,sceneHeight);
+			Scene scene = new Scene(bp,sceneWidth,sceneHeight);
 			scene.getStylesheets().add(getClass().getResource("Main.css").toExternalForm());
 			
 			// Responsive scene resolution on drag  (replace primaryStage w/ stage)?
@@ -84,8 +123,6 @@ public class Main extends Application {
 	}
 	
 	public static void main(String[] args) {
-		ReadFolder.read("src/data");
-		
-		//launch(args);
+		launch(args);
 	}
 }
