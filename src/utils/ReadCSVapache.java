@@ -56,7 +56,7 @@ public class ReadCSVapache {
 		}
 	}
 	
-	public static List<String> readTraffic(String file, int column, int persons, int bikes, int cars){
+	public static List<String> readTraffic(String file){
 		List<String> temp = new ArrayList<String>();
 		try {
 			Reader reader = new FileReader(file);// create reader to read files
@@ -65,11 +65,12 @@ public class ReadCSVapache {
 			int counter = 0;
 			for(CSVRecord record : records) {
 				if(counter > 0) {
-					double x = Double.parseDouble(record.get(persons));
-					double y = Double.parseDouble(record.get(bikes));
-					double z = Double.parseDouble(record.get(cars));
-					if(x <= 15 && y <= 5 && y <= 0) {
-						String a = record.get(column);
+					double x = Double.parseDouble(record.get(1));
+					double y = Double.parseDouble(record.get(2));
+					double z = Double.parseDouble(record.get(3));
+					double k = Double.parseDouble(record.get(4));
+					if(x <= 0 && y <= 0 && y <= 0 && k <= 0) {
+						String a = record.get(0);
 						//System.out.println(a);
 						temp.add(a);
 					}
@@ -86,35 +87,35 @@ public class ReadCSVapache {
 	}
 	
 	//read(<file>,<string>,<list of test values>,<column  corresponding test values>)
-	public static List<Double> read(String file , int column, List<String> values, int valColumn) {
-		List<Double> temp = new ArrayList<Double>();
+	public static Double getAverageStrain(String file , int column, List<String> values, int valColumn) {
 		try {
 			Reader reader= Files.newBufferedReader(Paths.get(file));// create reader to read files
 			Iterable<CSVRecord> records = CSVFormat.newFormat(';').parse(reader);// reads the file
-			
+			int avg = 0;
+			int avgCounter = 0;
 			int counter = 0;
 			for(CSVRecord record:records) {
-				if(counter > 900000) {
-					for(String val: values) {
-						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-						LocalDateTime test = LocalDateTime.parse(record.get(valColumn).replace("Z", ""),formatter);
-						LocalDateTime before = LocalDateTime.parse(val.replace("Z", ""),formatter);
-						LocalDateTime after = before.plus(1,ChronoUnit.HOURS);
-						if(DateCalc.isWithinRange(test, before, after)) {
-							Double x = Double.parseDouble(record.get(column).replace(",", "."));
-							temp.add(x);
-						}
+				if(counter > 0) {
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+					LocalDateTime test = LocalDateTime.parse(record.get(valColumn).replace("Z", ""),formatter);
+					LocalDateTime before = LocalDateTime.parse(values.get(0).replace("Z", ""),formatter);
+					LocalDateTime after = before.plus(1,ChronoUnit.HOURS);
+					if(DateCalc.isWithinRange(test, before, after)) {
+						Double x = Double.parseDouble(record.get(column).replace(",", "."));
+						avg += x;
+						avgCounter++;
 					}
 				}
 				counter++;
 			}
 			reader.close();
-			return temp;
+			System.out.println(file);
+			return (double)avg/avgCounter;
 		} catch (IOException ex) {
 		    ex.printStackTrace();
 		}
 		System.out.println("LIST IS EMPTY!");
-		return temp;
+		return 0d;
 	}
 }
 

@@ -64,7 +64,7 @@ public class Main extends Application {
 	        }
 	        
 	        //MALC
-	        NumberAxis xAxis = new NumberAxis(0, X_DATA_COUNT, 1);
+	        NumberAxis xAxis = new NumberAxis(1, X_DATA_COUNT, 1);
 	        NumberAxis yAxis = new NumberAxis();
 	        xAxis.setLabel("years");
 	        
@@ -72,8 +72,15 @@ public class Main extends Application {
 	        //chart.addSeries(PrepareSeries.prepare(<name>, <dimensions y-axis>,<line function>) <color>); 
 	        List<String> lowTraffic = new ArrayList<String>();
 	        List<Double> strains = new ArrayList<Double>();
-	        lowTraffic = ReadCSVapache.readTraffic("/Volumes/MacOS/PAD/data/traffic/verkeer.csv", 0,1,2,3);
-			strains = ReadCSVapache.read("/Volumes/MacOS/PAD/data/strain-group5/strain#20501.csv", 2, lowTraffic, 0);
+	        lowTraffic = ReadCSVapache.readTraffic("/Volumes/MacOS/PAD/data/traffic/verkeer.csv");
+			strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group1/strain#10106.csv", 2, lowTraffic, 0));
+			strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group2/strain#10201.csv", 2, lowTraffic, 0));
+			strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group3/strain#10301.csv", 2, lowTraffic, 0));
+			strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group4/strain#20401.csv", 2, lowTraffic, 0));
+			strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group5/strain#20501.csv", 2, lowTraffic, 0));
+			strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group6/strain#20601.csv", 2, lowTraffic, 0));
+			strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group7/strain#20704.csv", 2, lowTraffic, 0));
+			strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group8/strain#20801.csv", 2, lowTraffic, 0));
 	        
 			for(Double s : strains) {
 				System.out.println(s);
@@ -89,7 +96,10 @@ public class Main extends Application {
 	        bp.setCenter(chart);
 	        bp.setBottom(chart.getLegend());
 	        
+	        //BorderPane bp2 = new BorderPane();
 			
+	        //bp.setCenter(bp2);
+	        //pb.setBottom(slider);
 			 // Scene
 			Scene scene = new Scene(bp,sceneWidth,sceneHeight);
 			scene.getStylesheets().add(getClass().getResource("Main.css").toExternalForm());
@@ -98,15 +108,15 @@ public class Main extends Application {
 	        scene.setOnMousePressed(m -> {
 	            if (m.getButton() == MouseButton.PRIMARY) {
 	                scene.setCursor(Cursor.MOVE);
-	                initialX = (int) (stage.getX() - m.getScreenX());
-	                initialY = (int) (stage.getY() - m.getScreenY());
+	                initialX = (int) (primaryStage.getX() - m.getScreenX());
+	                initialY = (int) (primaryStage.getY() - m.getScreenY());
 	            }
 	        });
 
 	        scene.setOnMouseDragged(m -> {
 	            if (m.getButton() == MouseButton.PRIMARY) {
-	                stage.setX(m.getScreenX() + initialX);
-	                stage.setY(m.getScreenY() + initialY);
+	            	primaryStage.setX(m.getScreenX() + initialX);
+	            	primaryStage.setY(m.getScreenY() + initialY);
 	            }
 	        });
 
