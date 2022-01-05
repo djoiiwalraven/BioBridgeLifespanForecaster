@@ -16,6 +16,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.control.SplitPane;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -36,18 +37,22 @@ public class Main extends Application {
     int initialX;
     int initialY;
     
+    static final int YEARS = 10;
+    static final int TRAFFIC = 50;
+    
     //MALC
-    public static final int X_DATA_COUNT = 10;
+    //static final int X_DATA_COUNT = 8;
     
 	@Override
 	public void start(Stage primaryStage) {
 		
 		try {
 			//FXML
-			Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
+			BorderPane root = FXMLLoader.load(getClass().getResource("Main.fxml"));
 			root.setStyle("-fx-background-color:rgb(186,153,122,0.7);");
 			primaryStage.setTitle("Bio-Bridge Lifespan Forecaster");
 			
+			System.out.println();
 			// Responsive Resolution on start-up
 	        int sceneWidth = 0;
 	        int sceneHeight = 0;
@@ -63,66 +68,83 @@ public class Main extends Application {
 	            sceneHeight = 920;
 	        }
 	        
-	        //MALC
-	        NumberAxis xAxis = new NumberAxis(1, X_DATA_COUNT, 1);
-	        NumberAxis yAxis = new NumberAxis();
-	        xAxis.setLabel("years");
-	        
-	        
+	        //MALC DATA
 	        //chart.addSeries(PrepareSeries.prepare(<name>, <dimensions y-axis>,<line function>) <color>); 
 	        List<String> lowTraffic = new ArrayList<String>();
-	        List<Double> strains = new ArrayList<Double>();
-	        lowTraffic = ReadCSVapache.readTraffic("/Volumes/MacOS/PAD/data/traffic/verkeer.csv");
-			strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group1/strain#10106.csv", 2, lowTraffic, 0));
-			strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group2/strain#10201.csv", 2, lowTraffic, 0));
-			strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group3/strain#10301.csv", 2, lowTraffic, 0));
-			strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group4/strain#20401.csv", 2, lowTraffic, 0));
-			strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group5/strain#20501.csv", 2, lowTraffic, 0));
-			strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group6/strain#20601.csv", 2, lowTraffic, 0));
-			strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group7/strain#20704.csv", 2, lowTraffic, 0));
-			strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group8/strain#20801.csv", 2, lowTraffic, 0));
-	        
-			for(Double s : strains) {
-				System.out.println(s);
-			}
+	        List<Double> strainData = new ArrayList<Double>();
+	        List<Double> lifespanData = new ArrayList<Double>();
+	        //lowTraffic = ReadCSVapache.readTraffic("/Volumes/MacOS/PAD/data/traffic/verkeer.csv");
+			//strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group1/strain#10106.csv", 2, lowTraffic, 0));
+			//strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group2/strain#10201.csv", 2, lowTraffic, 0));
+			//strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group3/strain#10301.csv", 2, lowTraffic, 0));
+			//strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group4/strain#20401.csv", 2, lowTraffic, 0));
+			//strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group5/strain#20501.csv", 2, lowTraffic, 0));
+			//strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group6/strain#20601.csv", 2, lowTraffic, 0));
+			//strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group7/strain#20704.csv", 2, lowTraffic, 0));
+			//strains.add(ReadCSVapache.getAverageStrain("/Volumes/MacOS/PAD/data/strain-group8/strain#20801.csv", 2, lowTraffic, 0));
+	        //random values
+			strainData.add(-200d);
+	        strainData.add(500d);
+	        strainData.add(0d);
+	        strainData.add(180d);
+	        strainData.add(-73d);
+	        strainData.add(-400d);
+	        strainData.add(-300d);
+	        strainData.add(89d);
 			
-	        LineChart baseChart = new LineChart(xAxis, yAxis);
-	        baseChart.getData().add(PrepareSeries.dataPoints("Strain %", strains, 10));
-	        MultipleAxesLineChart chart = new MultipleAxesLineChart(baseChart, Color.RED);
-	        chart.addSeries(PrepareSeries.dataPoints("Lifespan", strains, 10),Color.BLUE);
-	        
-	        
-	        BorderPane bp = new BorderPane();
-	        bp.setCenter(chart);
-	        bp.setBottom(chart.getLegend());
-	        
-	        //BorderPane bp2 = new BorderPane();
+	        lifespanData.add(100d);
+	        lifespanData.add(80d);
+	        lifespanData.add(40d);
+	        lifespanData.add(20d);
+	        lifespanData.add(18d);
+	        lifespanData.add(12d);
+	        lifespanData.add(5d);
+	        lifespanData.add(2d);
 			
-	        //bp.setCenter(bp2);
-	        //pb.setBottom(slider);
-			 // Scene
-			Scene scene = new Scene(bp,sceneWidth,sceneHeight);
+			//MALC LEFT
+	        NumberAxis lxAxis = new NumberAxis(0, YEARS, 1);
+	        NumberAxis lyAxis = new NumberAxis();
+	        lyAxis.setLabel("Strain %");
+	        lxAxis.setLabel("years");
+			
+	        
+	        LineChart baseLeftChart = new LineChart(lxAxis, lyAxis);
+	        baseLeftChart.getData().add(PrepareSeries.dataPoints("Strain %", strainData, YEARS, Color.RED));
+	        MultipleAxesLineChart leftChart = new MultipleAxesLineChart(baseLeftChart, Color.RED);
+	        leftChart.addSeries(PrepareSeries.dataPoints("Lifespan", lifespanData, YEARS, Color.BLUE),Color.BLUE);
+	        
+	        
+	        //CHART RIGHT
+	        NumberAxis rxAxis = new NumberAxis(0, TRAFFIC, 10);
+	        NumberAxis ryAxis = new NumberAxis();
+	        ryAxis.setLabel("Strain %");
+	        rxAxis.setLabel("Traffic");
+	        LineChart rightChart = new LineChart(rxAxis, ryAxis);
+	        rightChart.getData().add(PrepareSeries.dataPoints("Strain %", strainData, TRAFFIC, Color.ORANGE));
+	        rightChart.setLegendVisible(false);
+	        
+	        //CHART PANES
+	        BorderPane leftPane = new BorderPane();
+	        BorderPane rightPane = new BorderPane();
+	        leftPane.setCenter(leftChart);
+	        leftPane.setBottom(leftChart.getLegend());
+	        rightPane.setCenter(rightChart);
+	        
+	        //CHARTS PANE
+	        SplitPane charts = new SplitPane();
+	        charts.getItems().addAll(leftPane, rightPane);
+	        charts.setDividerPositions(0.5);
+	        charts.maxWidthProperty().multiply(0.25);
+	        leftPane.maxWidthProperty().bind(charts.widthProperty().multiply(0.5));
+	        leftPane.minWidthProperty().bind(charts.widthProperty().multiply(0.5));
+	        
+	        //SET ROOT PANE
+	        root.setCenter(charts);
+	        //root.setBottom(sliders);
+	        
+	        //SET SCENE
+			Scene scene = new Scene(root,sceneWidth,sceneHeight);
 			scene.getStylesheets().add(getClass().getResource("Main.css").toExternalForm());
-			
-			// Responsive scene resolution on drag  (replace primaryStage w/ stage)?
-	        scene.setOnMousePressed(m -> {
-	            if (m.getButton() == MouseButton.PRIMARY) {
-	                scene.setCursor(Cursor.MOVE);
-	                initialX = (int) (primaryStage.getX() - m.getScreenX());
-	                initialY = (int) (primaryStage.getY() - m.getScreenY());
-	            }
-	        });
-
-	        scene.setOnMouseDragged(m -> {
-	            if (m.getButton() == MouseButton.PRIMARY) {
-	            	primaryStage.setX(m.getScreenX() + initialX);
-	            	primaryStage.setY(m.getScreenY() + initialY);
-	            }
-	        });
-
-	        scene.setOnMouseReleased(m -> {
-	            scene.setCursor(Cursor.DEFAULT);
-	        });
 	        
 	        // Stage
 			primaryStage.setScene(scene);
