@@ -36,7 +36,7 @@ public class MultipleAxesLineChart extends StackPane {
     private final AnchorPane detailsWindow;
 
     private final double yAxisSeparation = 20;
-    private double strokeWidth = 0.3;
+    private double strokeWidth = 2;
 
     public MultipleAxesLineChart(LineChart baseChart, Color lineColor) {
         this(baseChart, lineColor, null);
@@ -138,7 +138,7 @@ public class MultipleAxesLineChart extends StackPane {
     }
 
     private void styleBaseChart(LineChart baseChart) {
-        baseChart.setCreateSymbols(false);
+        baseChart.setCreateSymbols(true);
         baseChart.setLegendVisible(false);
         baseChart.getXAxis().setAutoRanging(false);
         baseChart.getXAxis().setAnimated(false);
@@ -170,7 +170,7 @@ public class MultipleAxesLineChart extends StackPane {
         lineChart.prefWidthProperty().bind(widthProperty().subtract((yAxisWidth+yAxisSeparation)*backgroundCharts.size()));
         lineChart.maxWidthProperty().bind(widthProperty().subtract((yAxisWidth+yAxisSeparation)*backgroundCharts.size()));
 
-        return lineChart;
+        return hBox;
     }
 
     private Node resizeBackgroundChart(LineChart lineChart) {
@@ -208,7 +208,7 @@ public class MultipleAxesLineChart extends StackPane {
 
         // create chart
         LineChart lineChart = new LineChart(xAxis, yAxis);
-        lineChart.setAnimated(false);
+        lineChart.setAnimated(true);
         lineChart.setLegendVisible(false);
         lineChart.getData().add(series);
 
@@ -229,7 +229,7 @@ public class MultipleAxesLineChart extends StackPane {
         lineChart.setHorizontalZeroLineVisible(false);
         lineChart.setVerticalGridLinesVisible(false);
         lineChart.setHorizontalGridLinesVisible(false);
-        lineChart.setCreateSymbols(false);
+        lineChart.setCreateSymbols(true);
     }
 
     private String toRGBCode(Color color) {

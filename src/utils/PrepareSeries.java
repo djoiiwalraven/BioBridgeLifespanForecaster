@@ -3,7 +3,11 @@ package utils;
 import java.util.List;
 import java.util.function.Function;
 
+import org.apache.commons.math3.geometry.euclidean.threed.SphericalCoordinates;
+
 import javafx.scene.chart.XYChart;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
 public class PrepareSeries {
 	 public static XYChart.Series<Number, Number> prepare(String name, int DATA_COUNT, Function<Integer, Double> function) {
@@ -15,14 +19,14 @@ public class PrepareSeries {
 		 return series;
 	 }
 	 
-	 public static XYChart.Series<Number, Number> dataPoints(String name, List<Double> data, int limit){
+	 public static XYChart.Series<Number, Number> dataPoints(String name, List<Double> data, int limit, Color cl){
 		 XYChart.Series<Number, Number> series = new XYChart.Series<>();
-		 
 		 series.setName(name);
 		 for (int i = 0; i < data.size() && i < limit; i++) {
-			 series.getData().add(new XYChart.Data<>(i,data.get(i)));
+			 XYChart.Data<Number,Number> dataPoint = new XYChart.Data<Number,Number>(i,data.get(i));
+			 dataPoint.setNode(new Circle(5, cl));
+			 series.getData().add(dataPoint);
 		 }
-		 
 		 return series;
 	 }
 }
