@@ -57,15 +57,21 @@ public class Main extends Application {
 	        int sceneWidth = 0;
 	        int sceneHeight = 0;
 	        
-	        if (screenWidth <= 800 && screenHeight <= 600) {
-	            sceneWidth = 600;
-	            sceneHeight = 350;
-	        } else if (screenWidth <= 1280 && screenHeight <= 768) {
-	            sceneWidth = 800;
-	            sceneHeight = 450;
-	        } else if (screenWidth <= 1920 && screenHeight <= 1080) {
-	            sceneWidth = 1800;
-	            sceneHeight = 920;
+	        if( screenWidth >= 1920 && screenHeight >= 1080) {
+	        	System.out.println("BIG");
+	        	sceneWidth = 1812;
+	            sceneHeight = 1020;
+	        } else if ( screenWidth >= 1280 && screenHeight >= 768) {
+	        	System.out.println("MEDIUM");
+	        	sceneWidth = 1200;
+	            sceneHeight = 675;
+	        } else if (screenWidth >= 800 && screenHeight >= 600) {
+	        	System.out.println("SMALL");
+	            sceneWidth = 720;
+	            sceneHeight = 405;
+	        } else {
+	        	sceneWidth = 480;
+	            sceneHeight = 270;
 	        }
 	        
 	        //MALC DATA
