@@ -1,4 +1,4 @@
-package utils;
+package trash;
 
 public class Struct {
 	private String[] arr;

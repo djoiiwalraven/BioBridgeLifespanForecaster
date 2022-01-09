@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
+import trash.ReadFolder;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Screen;
@@ -24,8 +24,7 @@ import java.util.List;
 import java.util.function.Function;
 import utils.PrepareSeries;
 
-import utils.ReadCSVapache;
-import utils.ReadFolder;
+import utils.ReadCSV;
 
 public class Main extends Application {
 	
