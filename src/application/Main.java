@@ -9,7 +9,7 @@ import trash.ReadFolder;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Screen;
-
+import domain.CustomSlider;
 //MALC
 import domain.MultipleAxesLineChart;
 import javafx.scene.chart.LineChart;
@@ -145,7 +145,9 @@ public class Main extends Application {
 	        
 	        //SET ROOT PANE
 	        root.setCenter(charts);
-	        //root.setBottom(sliders);
+	        String[] slidersArr = {"A","B","C"};
+	        CustomSlider sliders = new CustomSlider(slidersArr);
+	        root.setBottom(sliders);
 	        
 	        //SET SCENE
 			Scene scene = new Scene(root,sceneWidth,sceneHeight);
