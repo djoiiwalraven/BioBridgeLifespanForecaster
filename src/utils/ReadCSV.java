@@ -23,7 +23,7 @@ import org.apache.commons.csv.CSVRecord;
 
 public class ReadCSV {
 	
-	private static <T> Iterable<T> skipFirst(final Iterable<T> c) {
+	public static <T> Iterable<T> skipFirst(final Iterable<T> c) {
 	    return new Iterable<T>() {
 	        @Override public Iterator<T> iterator() {
 	            Iterator<T> i = c.iterator();
@@ -38,7 +38,6 @@ public class ReadCSV {
 		try {
 			Reader reader = Files.newBufferedReader(Paths.get(file));// create reader to read files
 			Iterable<CSVRecord> records = CSVFormat.newFormat(seperator).parse(reader);// reads the file
-			//((city.getName() == null) ? "N/A" : city.getName());
 			for(CSVRecord record: (header == true) ? skipFirst(records) : records) {
 				if(record.get(notAllowedEmpty) != "") {
 					tempList.add(record);
@@ -52,7 +51,6 @@ public class ReadCSV {
 		System.out.println("LIST IS EMPTY!");
 		return tempList;
 	}
-	
 	
 	public static List<String> returnAsList(String file, int column, char seperator) {
 		List<String> temp = new ArrayList<String>();
@@ -73,8 +71,6 @@ public class ReadCSV {
 		return temp;
 	}
 	
-	
-	
 	public static List<String> readTraffic(String file){
 		List<String> temp = new ArrayList<String>();
 		try {
@@ -90,7 +86,6 @@ public class ReadCSV {
 					double k = Double.parseDouble(record.get(4));
 					if(x <= 0 && y <= 0 && y <= 0 && k <= 0) {
 						String a = record.get(0);
-						//System.out.println(a);
 						temp.add(a);
 					}
 				}
@@ -115,11 +110,9 @@ public class ReadCSV {
 			int counter = 0;
 			for(CSVRecord record:records) {
 				if(counter > 0) {
-					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-					LocalDateTime test = LocalDateTime.parse(record.get(valColumn).replace("Z", ""),formatter);
-					LocalDateTime before = LocalDateTime.parse(values.get(0).replace("Z", ""),formatter);
-					LocalDateTime after = before.plus(1,ChronoUnit.HOURS);
-					if(DateCalc.isWithinRange(test, before, after)) {
+					String test = record.get(valColumn);
+					String before = values.get(0);
+					if(DateCalc.isWithinRange(test, before)) {
 						Double x = Double.parseDouble(record.get(column).replace(",", "."));
 						avg += x;
 						avgCounter++;
@@ -135,6 +128,38 @@ public class ReadCSV {
 		}
 		System.out.println("LIST IS EMPTY!");
 		return 0d;
+	}
+	
+	public static double[] getAverageOnDateTime(String file, char seperator, int timeColumn, int[] columns, boolean header, String initTime) {
+		double[] averages = new double[columns.length];
+		try {
+			Reader reader= Files.newBufferedReader(Paths.get(file));// create reader to read files
+			Iterable<CSVRecord> records = CSVFormat.newFormat(seperator).parse(reader);// reads the file
+			int avgCounter = 0;
+			int counter = 0;
+			for(CSVRecord record: (header == true) ? skipFirst(records) : records) {
+				if(record.get(columns[0]) != "") {
+					String test = record.get(timeColumn);
+					String before = initTime;
+					if(DateCalc.isWithinRange(test, before)) {
+						System.out.println(test);
+						for(int i = 0; i < columns.length; i++) {
+							averages[i] += Double.parseDouble(record.get(columns[i]).replace(",", "."));
+						}
+						avgCounter++;
+					}
+				}
+			}
+			for(int i = 0; i < columns.length; i++) {
+				averages[i] /= avgCounter;
+			}
+			reader.close();
+			return averages;
+		} catch (IOException ex) {
+		    ex.printStackTrace();
+		}
+		System.out.println("LIST IS EMPTY!");
+		return averages;
 	}
 	
 	public static void compare(String file, int column1, int column2) {
