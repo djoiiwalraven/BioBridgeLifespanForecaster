@@ -143,10 +143,23 @@ public class Main extends Application {
 	        leftPane.maxWidthProperty().bind(charts.widthProperty().multiply(0.5));
 	        leftPane.minWidthProperty().bind(charts.widthProperty().multiply(0.5));
 	        
+	        //SET SLIDERS
+	        String[] slidersArr1 = {"A","B","C"};
+	        CustomSlider slider1 = new CustomSlider(slidersArr1);
+	        String[] slidersArr2 = {"1","2","3"};
+	        CustomSlider slider2 = new CustomSlider(slidersArr2);
+	        
+	        SplitPane sliders = new SplitPane();
+	        sliders.getItems().addAll(slider1, slider2);
+	        sliders.setDividerPositions(0.5);
+	        sliders.maxWidthProperty().multiply(0.25);
+	        slider1.maxWidthProperty().bind(charts.widthProperty().multiply(0.5));
+	        slider2.minWidthProperty().bind(charts.widthProperty().multiply(0.5));
+	        
+	       
+	        
 	        //SET ROOT PANE
 	        root.setCenter(charts);
-	        String[] slidersArr = {"A","B","C"};
-	        CustomSlider sliders = new CustomSlider(slidersArr);
 	        root.setBottom(sliders);
 	        
 	        //SET SCENE
