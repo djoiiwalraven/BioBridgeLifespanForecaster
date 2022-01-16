@@ -3,8 +3,6 @@ package utils;
 import java.util.List;
 import java.util.function.Function;
 
-import org.apache.commons.math3.geometry.euclidean.threed.SphericalCoordinates;
-
 import javafx.scene.chart.XYChart;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;

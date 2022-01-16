@@ -61,6 +61,7 @@ public class OrganizeData {
 		try {
 			Reader reader = Files.newBufferedReader(Paths.get("/Volumes/MacOS/PAD/data/meteo/meteo.csv"));
 			Iterable<CSVRecord> records = CSVFormat.newFormat(seperator).parse(reader);
+			
 			int previous = -1;
 			
 			String currentDate = "";

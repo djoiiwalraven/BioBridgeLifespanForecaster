@@ -20,7 +20,6 @@ public class CustomSlider extends BorderPane  {
 	GridPane gridPane;
 	Label[] labels ;
 	String[] stringLabels;
-	List<String> temp;
 	List<CSVRecord> values;
 	
 	

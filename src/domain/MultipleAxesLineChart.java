@@ -26,11 +26,11 @@ import java.util.List;
 import java.util.Map;
 
 public class MultipleAxesLineChart extends StackPane {
-	private final LineChart baseChart;
+	private final LineChart<Number,Number> baseChart;
 	
-    private final ObservableList<LineChart> backgroundCharts = FXCollections.observableArrayList();
+    private final ObservableList<LineChart<Number,Number>> backgroundCharts = FXCollections.observableArrayList();
     
-    private final Map<LineChart, Color> chartColorMap = new HashMap<>();
+    private final Map<LineChart<Number,Number>, Color> chartColorMap = new HashMap<>();
 
     private final double yAxisWidth = 60;
     private final AnchorPane detailsWindow;
@@ -38,11 +38,11 @@ public class MultipleAxesLineChart extends StackPane {
     private final double yAxisSeparation = 20;
     private double strokeWidth = 2;
 
-    public MultipleAxesLineChart(LineChart baseChart, Color lineColor) {
+    public MultipleAxesLineChart(LineChart<Number,Number> baseChart, Color lineColor) {
         this(baseChart, lineColor, null);
     }
 
-    public MultipleAxesLineChart(LineChart baseChart, Color lineColor, Double strokeWidth) {
+    public MultipleAxesLineChart(LineChart<Number,Number> baseChart, Color lineColor, Double strokeWidth) {
         if (strokeWidth != null) {
             this.strokeWidth = strokeWidth;
         }
@@ -51,7 +51,7 @@ public class MultipleAxesLineChart extends StackPane {
         chartColorMap.put(baseChart, lineColor);
 
         styleBaseChart(baseChart);
-        styleChartLine(baseChart, lineColor);
+        //styleChartLine(baseChart, lineColor);
         setFixedAxisWidth(baseChart);
 
         setAlignment(Pos.CENTER_LEFT);
@@ -64,7 +64,7 @@ public class MultipleAxesLineChart extends StackPane {
         rebuildChart();
     }
 
-    private void bindMouseEvents(LineChart baseChart, Double strokeWidth) {
+    private void bindMouseEvents(LineChart<Number,Number> baseChart, Double strokeWidth) {
         final DetailsPopup detailsPopup = new DetailsPopup();
         getChildren().add(detailsWindow);
         detailsWindow.getChildren().add(detailsPopup);
@@ -75,8 +75,8 @@ public class MultipleAxesLineChart extends StackPane {
         setOnMouseMoved(null);
         setMouseTransparent(false);
 
-        final Axis xAxis = baseChart.getXAxis();
-        final Axis yAxis = baseChart.getYAxis();
+        final Axis<Number> xAxis = baseChart.getXAxis();
+        final Axis<Number> yAxis = baseChart.getYAxis();
 
         final Line xLine = new Line();
         final Line yLine = new Line();
@@ -137,7 +137,7 @@ public class MultipleAxesLineChart extends StackPane {
         });
     }
 
-    private void styleBaseChart(LineChart baseChart) {
+    private void styleBaseChart(LineChart<Number,Number> baseChart) {
         baseChart.setCreateSymbols(true);
         baseChart.setLegendVisible(false);
         baseChart.getXAxis().setAutoRanging(false);
@@ -145,7 +145,7 @@ public class MultipleAxesLineChart extends StackPane {
         baseChart.getYAxis().setAnimated(false);
     }
 
-    private void setFixedAxisWidth(LineChart chart) {
+    private void setFixedAxisWidth(LineChart<Number,Number> chart) {
         chart.getYAxis().setPrefWidth(yAxisWidth);
         chart.getYAxis().setMaxWidth(yAxisWidth);
     }
@@ -154,13 +154,13 @@ public class MultipleAxesLineChart extends StackPane {
         getChildren().clear();
 
         getChildren().add(resizeBaseChart(baseChart));
-        for (LineChart lineChart : backgroundCharts) {
+        for (LineChart<Number,Number> lineChart : backgroundCharts) {
             getChildren().add(resizeBackgroundChart(lineChart));
         }
         getChildren().add(detailsWindow);
     }
 
-    private Node resizeBaseChart(LineChart lineChart) {
+    private Node resizeBaseChart(LineChart<Number,Number> lineChart) {
         HBox hBox = new HBox(lineChart);
         hBox.setAlignment(Pos.CENTER_LEFT);
         hBox.prefHeightProperty().bind(heightProperty());
@@ -173,7 +173,7 @@ public class MultipleAxesLineChart extends StackPane {
         return hBox;
     }
 
-    private Node resizeBackgroundChart(LineChart lineChart) {
+    private Node resizeBackgroundChart(LineChart<Number,Number> lineChart) {
         HBox hBox = new HBox(lineChart);
         hBox.setAlignment(Pos.CENTER_LEFT);
         hBox.prefHeightProperty().bind(heightProperty());
@@ -190,7 +190,7 @@ public class MultipleAxesLineChart extends StackPane {
         return hBox;
     }
 
-    public void addSeries(XYChart.Series series, Color lineColor) {
+    public void addSeries(XYChart.Series<Number,Number> series, Color lineColor) {
         NumberAxis yAxis = new NumberAxis();
         NumberAxis xAxis = new NumberAxis();
 
@@ -207,7 +207,7 @@ public class MultipleAxesLineChart extends StackPane {
         yAxis.setLabel(series.getName());
 
         // create chart
-        LineChart lineChart = new LineChart(xAxis, yAxis);
+        LineChart<Number,Number> lineChart = new LineChart<Number,Number>(xAxis, yAxis);
         lineChart.setAnimated(true);
         lineChart.setLegendVisible(false);
         lineChart.getData().add(series);
@@ -219,7 +219,7 @@ public class MultipleAxesLineChart extends StackPane {
         backgroundCharts.add(lineChart);
     }
 
-    private void styleBackgroundChart(LineChart lineChart, Color lineColor) {
+    private void styleBackgroundChart(LineChart<Number,Number> lineChart, Color lineColor) {
         styleChartLine(lineChart, lineColor);
 
         Node contentBackground = lineChart.lookup(".chart-content").lookup(".chart-plot-background");
@@ -239,7 +239,7 @@ public class MultipleAxesLineChart extends StackPane {
                 (int) (color.getBlue() * 255));
     }
 
-    private void styleChartLine(LineChart chart, Color lineColor) {
+    private void styleChartLine(LineChart<Number,Number> chart, Color lineColor) {
         chart.getYAxis().lookup(".axis-label").setStyle("-fx-text-fill: " + toRGBCode(lineColor) + "; -fx-font-weight: bold;");
         Node seriesLine = chart.lookup(".chart-series-line");
         seriesLine.setStyle("-fx-stroke: " + toRGBCode(lineColor) + "; -fx-stroke-width: " + strokeWidth + ";");
@@ -256,7 +256,7 @@ public class MultipleAxesLineChart extends StackPane {
         baseChartCheckBox.setOnAction(event -> baseChartCheckBox.setSelected(true));
         hBox.getChildren().add(baseChartCheckBox);
 
-        for (final LineChart lineChart : backgroundCharts) {
+        for (final LineChart<Number,Number> lineChart : backgroundCharts) {
             CheckBox checkBox = new CheckBox(lineChart.getYAxis().getLabel());
             checkBox.setStyle("-fx-text-fill: " + toRGBCode(chartColorMap.get(lineChart)) + "; -fx-font-weight: bold");
             checkBox.setSelected(true);
@@ -294,7 +294,7 @@ public class MultipleAxesLineChart extends StackPane {
                 getChildren().add(baseChartPopupRow);
             }
 
-            for (LineChart lineChart : backgroundCharts) {
+            for (LineChart<Number,Number> lineChart : backgroundCharts) {
                 HBox popupRow = buildPopupRow(event, xValueLong, lineChart);
                 if (popupRow == null) continue;
 
@@ -302,7 +302,7 @@ public class MultipleAxesLineChart extends StackPane {
             }
         }
 
-        private HBox buildPopupRow(MouseEvent event, Long xValueLong, LineChart lineChart) {
+        private HBox buildPopupRow(MouseEvent event, Long xValueLong, LineChart<Number,Number> lineChart) {
             Label seriesName = new Label(lineChart.getYAxis().getLabel());
             seriesName.setTextFill(chartColorMap.get(lineChart));
 
@@ -323,7 +323,7 @@ public class MultipleAxesLineChart extends StackPane {
             return popupRow;
         }
 
-        private double normalizeYValue(LineChart lineChart, double value) {
+        private double normalizeYValue(LineChart<Number,Number> lineChart, double value) {
             Double val = (Double) lineChart.getYAxis().getValueForDisplay(value);
             if (val == null) {
                 return 0;
@@ -336,9 +336,9 @@ public class MultipleAxesLineChart extends StackPane {
             return (Math.abs(yValueUnderMouse.doubleValue() - realYValue.doubleValue()) < tolerance);
         }
 
-        public Number getYValueForX(LineChart chart, Number xValue) {
-            List<XYChart.Data> dataList = ((List<XYChart.Data>)((XYChart.Series)chart.getData().get(0)).getData());
-            for (XYChart.Data data : dataList) {
+        public Number getYValueForX(LineChart<Number,Number> chart, Number xValue) {
+            List<XYChart.Data<Number,Number>> dataList = ((List<XYChart.Data<Number,Number>>)((XYChart.Series<Number,Number>)chart.getData().get(0)).getData());
+            for (XYChart.Data<Number,Number> data : dataList) {
                 if (data.getXValue().equals(xValue)) {
                     return (Number)data.getYValue();
                 }
