@@ -143,11 +143,14 @@ public class Main extends Application {
 	        leftPane.maxWidthProperty().bind(charts.widthProperty().multiply(0.5));
 	        leftPane.minWidthProperty().bind(charts.widthProperty().multiply(0.5));
 	        
+	        
 	        //SET SLIDERS
-	        String[] slidersArr1 = {"A","B","C"};
-	        CustomSlider slider1 = new CustomSlider(slidersArr1);
-	        String[] slidersArr2 = {"1","2","3"};
-	        CustomSlider slider2 = new CustomSlider(slidersArr2);
+	        String fileSliderKNMI = "C:\\Users\\oreli\\Desktop\\KNMIPrediction2050.csv";
+	        String fileSliderData = "C:\\Users\\oreli\\Desktop\\DataMinMaxValues.csv";
+	        String[] slidersArr1 = {"Time (yrs)","Traffic","Temperature (C)", "Humidity (%)", "Wind (m/s)"};
+	        CustomSlider slider1 = new CustomSlider(slidersArr1,fileSliderKNMI);
+	        String[] slidersArr2 = {"Temperature (C)","Wind (m/s)", "Humidity (%)" };
+	        CustomSlider slider2 = new CustomSlider(slidersArr2,fileSliderData);
 	        
 	        SplitPane sliders = new SplitPane();
 	        sliders.getItems().addAll(slider1, slider2);
@@ -156,7 +159,11 @@ public class Main extends Application {
 	        slider1.maxWidthProperty().bind(charts.widthProperty().multiply(0.5));
 	        slider2.minWidthProperty().bind(charts.widthProperty().multiply(0.5));
 	        
-	       
+	        
+	        
+	        //SET ROOT PANE
+	        root.setCenter(charts);
+	        root.setCenter(sliders);
 	        
 	        //SET ROOT PANE
 	        root.setCenter(charts);
