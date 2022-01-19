@@ -40,7 +40,26 @@ public class PredictionModel {
 	public double error(double realAnswer, double prediction) {
 		return realAnswer - prediction;
 	}
-	
+	public static int lifespanWeather(double temperature,double humidity,double wind,double strain) {
+		int lifespanYear=2120;
+		int lifespanDecrease=0;
+		if(Math.abs(strain)>500) {
+			lifespanDecrease+=(strain*temperature+strain*humidity+strain*wind)/10000;
+		}
+		else lifespanDecrease+= 0 ;
+		return lifespanYear-lifespanDecrease;
+		
+	}
+	public static int lifespanStrain(double strain) {
+		int lifespanYear=2120;
+		int lifespanDecrease=0;
+		if(Math.abs(strain)>500) {
+			lifespanDecrease-=Math.sqrt((strain)/50);
+		}
+		else lifespanDecrease-= 0 ;
+		return lifespanYear-lifespanDecrease;
+		
+	}
 	
 	
 	
