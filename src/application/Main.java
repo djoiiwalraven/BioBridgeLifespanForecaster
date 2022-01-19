@@ -65,7 +65,7 @@ public class Main extends Application {
 	        for(int i = 0 ; i < 20 ;i++) {
 	        	List<Double> temp = new ArrayList<>();
 	        	List<Double> temp2 = new ArrayList<>();
-	        	temp.add(0d);
+	    
 	        	temp.add(20d);
 	        	temp.add(-15d+(5*i));
 	        	temp.add(85.25d-(2*i));
@@ -74,7 +74,7 @@ public class Main extends Application {
 	        	//304.0,7.753805774278234,85.25301837270358,0.9976377952755906
 	        	//1893.0,8.39816272965878,84.90971128608982,0.9989501312335956,-439.68162760416647
 	        	//16.0,3.3568105065666067,80.79954971857391,2.2144090056285055,-616.2817361111117
-	        	
+	      
 	        	temp2.add(10000d);
 	        	temp2.add(7.75d);
 	        	temp2.add(85.25d);
@@ -114,8 +114,8 @@ public class Main extends Application {
 	        
 	        
 	        //SET SLIDERS
-	        String fileSliderKNMI = "C:\\Users\\oreli\\Desktop\\KNMIPrediction2050.csv";
-	        String fileSliderData = "C:\\Users\\oreli\\Desktop\\DataMinMaxValues.csv";
+	        String fileSliderKNMI = "src/data/KNMIPrediction2050.csv";
+	        String fileSliderData = "src/data/KNMIPrediction2050.csv"; //DataMinMaxValues.csv;
 	        String[] slidersArr1 = {"Time (yrs)","Traffic","Temperature (C)", "Humidity (%)", "Wind (m/s)"};
 	        CustomSlider slider1 = new CustomSlider(slidersArr1,fileSliderKNMI);
 	        String[] slidersArr2 = {"Temperature (C)","Wind (m/s)", "Humidity (%)" };
@@ -127,8 +127,6 @@ public class Main extends Application {
 	        sliders.maxWidthProperty().multiply(0.25);
 	        slider1.maxWidthProperty().bind(charts.widthProperty().multiply(0.5));
 	        slider2.minWidthProperty().bind(charts.widthProperty().multiply(0.5));
-	        
-	        
 	        
 	        //SET ROOT PANE
 	        root.setCenter(charts);

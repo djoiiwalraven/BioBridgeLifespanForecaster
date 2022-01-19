@@ -35,12 +35,31 @@ public class CustomSlider extends GridPane  {
 	
 	
 	public void createSliders(int amount) {
+		double MIN;
+		double MAX;
 		for(int i=0;i<amount;i++) {
-			double min = Double.parseDouble(values.get(0).get(1+i));
-			double max = Double.parseDouble(values.get(1).get(1+i));
+			if(amount > 3 ) {
+				if(i < 2) {
+					int min = Integer.parseInt(values.get(0).get(1+i));
+					int max = Integer.parseInt(values.get(1).get(1+i));
+					MIN = min;
+					MAX = max;
+				}else {
+					double min = Double.parseDouble(values.get(0).get(1+i));
+					double max = Double.parseDouble(values.get(1).get(1+i));
+					MIN = min;
+					MAX = max;
+				}
+			}else {
+				double min = Double.parseDouble(values.get(0).get(1+i));
+				double max = Double.parseDouble(values.get(1).get(1+i));
+				MIN = min;
+				MAX = max;
+			}
+			
 			Slider slider = new Slider();
-			slider.setMin(min);
-			slider.setMax(max);
+			slider.setMin(MIN);
+			slider.setMax(MAX);
 			slider.setPrefWidth(250);
 			slider.setShowTickLabels(true);
 	        slider.setShowTickMarks(true);
