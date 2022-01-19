@@ -12,6 +12,70 @@ import org.apache.commons.csv.CSVRecord;
 
 public class OrganizeData {
 	
+	public static void removeNaN() {
+		List<List<String>> org = new ArrayList<List<String>>();
+		List<String> headers = new ArrayList<String>();
+		
+		// Date;Strain%;
+		String[] header = {"DateTime","Strain%"};
+		for(String str: header) {
+			headers.add(str);
+		}
+		org.add(headers);
+				
+		for(CSVRecord strain: ReadCSV.returnAsList("/Volumes/MacOS/PAD/data/DateCombinedStrainWNaN.csv", ',', 0,  true)) {
+			//System.out.println(strain);
+			if(!strain.get(1).equals("NaN")) {
+				List<String> temp = new ArrayList<String>();
+				temp.add(strain.get(0));
+				temp.add(strain.get(1));
+				org.add(temp);
+			}
+		}
+		String[][] arr = org.stream().map(u -> u.toArray(new String[0])).toArray(String[][]::new);
+		WriteCSV.write("/Volumes/MacOS/PAD/data", "DateCombinedStrainReduced",arr);
+		System.out.println("FINSIHED");
+	}
+	
+	public static void combineAll() {
+		List<List<String>> org = new ArrayList<List<String>>();
+		List<String> headers = new ArrayList<String>();
+		
+		// Date;Traffic;Temperature;Humidity;Wind;
+		String[] header = {"DateTime","Traffic","Temperature","Humidity","Windspeed","Strain%"};
+		for(String str: header) {
+			headers.add(str);
+		}
+		org.add(headers);
+		
+		List<CSVRecord> strains = ReadCSV.returnAsList("/Volumes/MacOS/PAD/data/DateCombinedStrainReduced.csv", ',', 0,  false);
+		
+		int count = 0;
+		for(CSVRecord strain : strains) {
+			count++;
+			System.out.println(count*100/strains.size() + "%");
+			String currentTime = strain.get(0);
+			for(CSVRecord meta : ReadCSV.returnAsList("/Volumes/MacOS/PAD/data/organizedData.csv", ',', 0,true)) {
+				if(currentTime.equals(DateCalc.returnDateTime(meta.get(0)))){
+					//System.out.println(meta.get(0));
+					List<String> temp = new ArrayList<String>();
+					temp.add(strain.get(0)); //date
+					temp.add(meta.get(1)); //traffic
+					temp.add(meta.get(2)); //temperature
+					temp.add(meta.get(3)); //humidity
+					temp.add(meta.get(4)); //windspeed
+					temp.add(strain.get(1)); //strain%
+					org.add(temp);
+				}
+			}
+		}
+		
+		String[][] arr = org.stream().map(u -> u.toArray(new String[0])).toArray(String[][]::new);
+		WriteCSV.write("/Volumes/MacOS/PAD/data", "fullyOrganized",arr);
+		System.out.println("FINSIHED");
+		//List<CSVRecord> rec = ReadCSV.returnAsList("/Volumes/MacOS/PAD/data/organizedData.csv",',',0,true);
+	}
+	
 	public static void combineMeteoTraffic() {
 		List<List<String>> org = new ArrayList<List<String>>();
 		List<String> headers = new ArrayList<String>();

@@ -65,10 +65,21 @@ public class Main extends Application {
 	        for(int i = 0 ; i < 20 ;i++) {
 	        	List<Double> temp = new ArrayList<>();
 	        	List<Double> temp2 = new ArrayList<>();
-	        	for(int j = 0; j < 4; j++) {
-		        	temp.add((double)i+j);
-		        	temp2.add((double)i*j);
-	        	}
+	        	temp.add(0d);
+	        	temp.add(20d);
+	        	temp.add(-15d+(5*i));
+	        	temp.add(85.25d-(2*i));
+	        	temp.add(0.99d+(10*i));
+	        	
+	        	//304.0,7.753805774278234,85.25301837270358,0.9976377952755906
+	        	//1893.0,8.39816272965878,84.90971128608982,0.9989501312335956,-439.68162760416647
+	        	//16.0,3.3568105065666067,80.79954971857391,2.2144090056285055,-616.2817361111117
+	        	
+	        	temp2.add(10000d);
+	        	temp2.add(7.75d);
+	        	temp2.add(85.25d);
+	        	temp2.add(0.99d);
+	        	
 	        	one.add(temp);
 	        	two.add(temp2);
 	        }
@@ -76,7 +87,7 @@ public class Main extends Application {
 	        List<Double> oneAns = new ArrayList<>();
 	        List<Double> twoAns = new ArrayList<>();
 	        
-	        PredictionModel m = new PredictionModel("weigths");
+	        PredictionModel m = new PredictionModel("params");
 	        
 	        for(List<Double> lst : one) {
 	        	oneAns.add(m.makePrediction(lst));
@@ -87,8 +98,8 @@ public class Main extends Application {
 	        }
 
 	        
-			BorderPane leftPane = new Graph("years", "Strain %", oneAns, oneAns.size(),1);
-			BorderPane rightPane = new Graph("years", "Strain %", twoAns, twoAns.size(),1);
+			BorderPane leftPane = new Graph("traffic", "Strain %", oneAns, oneAns.size(),1);
+			BorderPane rightPane = new Graph("traffic", "Strain %", twoAns, twoAns.size(),1);
 			//BorderPane rightPane = new Graph("years", "Strain %", "Lifespan", one, two, (one.size() > two.size()) ? one.size() : two.size(),1);
 	        
 	       

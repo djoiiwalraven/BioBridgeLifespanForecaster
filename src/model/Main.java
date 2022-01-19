@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.csv.CSVRecord;
 
+import utils.GetParams;
 import utils.OrganizeData;
 import utils.ReadCSV;
 import utils.WriteCSV;
@@ -12,15 +13,7 @@ import utils.WriteCSV;
 public class Main {
 
 	public static void main(String[] args) {
-		
-		/*
-		 * When adding a Star to an object .. of this class.
-		 * it should only really store the star itself .. in its internal data.
-		 * but when retrieving a value .. as in (myPlanetCollection(myStar)
-		 * it will return a List with the planets .. (generated at that time)
-		 */
-		
-		
+
 		/* // SMA 
 		List<Double> output = new ArrayList<Double>();
 		
@@ -38,48 +31,29 @@ public class Main {
 			System.out.println(o);
 		}
 		*/
-		//String[] arr = {"DateTime","Traffic","Temp","Rain","Wind"};
-		//OrganizeData.weatherTraffic(arr);
 		
-		OrganizeData.combineMeteoTraffic();
+		List<CSVRecord> data = ReadCSV.returnAsList("/Volumes/MacOS/PAD/data/fullyOrganized.csv", ',', 0, true);
 		
-		/* // write csv test
-		String[][] arr = {
-				{"temp", "rain", "wind", "traffic",},
-				{"1","2"}
-		};
+		double[] y = new double[data.size()];
+		double[][] x = new double[data.size()][data.get(0).size()-2];
 		
-		WriteCSV.write("/Users/ddwalraven/Downloads", "arr",arr);
+		for(int i = 0; i < data.size(); i++) {
+			y[i] = Double.parseDouble(data.get(i).get(5));
+			double[] temp = new double[data.get(0).size()-2];
+			for(int j = 0; j < temp.length; j++) {
+				x[i][j] = Double.parseDouble(data.get(i).get(j+1));
+			}
+		}
 		
-		List<CSVRecord> rec = ReadCSV.returnAsList("/Users/ddwalraven/Downloads/arr.csv",',',0,true);
-		
-		for(CSVRecord record: rec) {
-			for(String str: record) {
-				System.out.print(str + " ; ");
+		for(double[] i : x) {
+			for(double j : i) {
+				System.out.print(j + ";");
 			}
 			System.out.println();
 		}
-		*/
 		
+		GetParams.writeParamsCSV(y, x,"src/data","params");
 		
-		/* // write weights csv test
-		// a b c y
-		// 1 4 8 2
-		// 2 2 4 3
-		// 8 3 2 12
-		// 12 12 8 35
-		
-		double[] y = {2,3,12,35};
-		double[][] x = {
-				{1,4,8},
-				{2,2,4},
-				{8,3,2},
-				{12,12,8}
-			};
-		
-		
-		GetParams.writeWeigthsCSV(y, x);
-		*/
 	}
 
 }
