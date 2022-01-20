@@ -47,7 +47,7 @@ public class MultipleAxesLineChart extends StackPane {
             this.strokeWidth = strokeWidth;
         }
         this.baseChart = baseChart;
-
+        this.baseChart.setAnimated(false);
         chartColorMap.put(baseChart, lineColor);
 
         styleBaseChart(baseChart);
@@ -208,8 +208,9 @@ public class MultipleAxesLineChart extends StackPane {
 
         // create chart
         LineChart<Number,Number> lineChart = new LineChart<Number,Number>(xAxis, yAxis);
-        lineChart.setAnimated(true);
+        lineChart.setAnimated(false);
         lineChart.setLegendVisible(false);
+        lineChart.getData().clear();
         lineChart.getData().add(series);
 
         styleBackgroundChart(lineChart, lineColor);

@@ -1,20 +1,28 @@
 package application;
 	
 import javafx.application.Application;
+import javafx.beans.value.ObservableValue;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.PredictionModel;
 import javafx.stage.Screen;
 import domain.CustomSlider;
+import domain.CustomSliders;
 import domain.Graph;
 
 import javafx.scene.layout.BorderPane;
+import javafx.scene.control.Slider;
 import javafx.scene.control.SplitPane;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import javax.swing.event.ChangeListener;
 
 
 public class Main extends Application {
@@ -27,6 +35,28 @@ public class Main extends Application {
     int initialX;
     int initialY;
     
+    final int START_YEAR = 0;
+    final int YEARS_INCREMENT = 1;
+    final int MAX_YEARS = 50;
+    
+    final int START_TRAFFIC = 0;
+    final int TRAFFIC_INCREMENT = 1;
+    final int MAX_TRAFFIC = 100; //*50;
+    
+    int currentYear = START_YEAR;
+    
+    Slider yearSlider;
+    HashMap<Slider,Double> inputYears = new HashMap<>();
+    HashMap<Integer,Double> outputYears = new HashMap<>();
+    
+    HashMap<Slider,Double> inputTraffic = new HashMap<>();
+    HashMap<Integer,Double> outputTraffic = new HashMap<>();
+    
+    Slider dummy = new Slider();
+    
+    //List<Slider> slidersYears = new ArrayList<Slider>();
+    //List<Slider> slidersTraffic = new ArrayList<Slider>();
+    
 	@Override
 	public void start(Stage primaryStage) {
 		
@@ -36,7 +66,6 @@ public class Main extends Application {
 			root.setStyle("-fx-background-color:rgb(186,153,122,0.7);");
 			primaryStage.setTitle("Bio-Bridge Lifespan Forecaster");
 			
-			System.out.println();
 			// Responsive Resolution on start-up
 	        int sceneWidth = 0;
 	        int sceneHeight = 0;
@@ -58,75 +87,120 @@ public class Main extends Application {
 	            sceneHeight = 270;
 	        }
 	        
-	        //MALC DATA
-	        List<List<Double>> one = new ArrayList<>();
-	        List<List<Double>> two = new ArrayList<>();
-	        
-	        for(int i = 0 ; i < 20 ;i++) {
-	        	List<Double> temp = new ArrayList<>();
-	        	List<Double> temp2 = new ArrayList<>();
-	    
-	        	temp.add(20d);
-	        	temp.add(-15d+(5*i));
-	        	temp.add(85.25d-(2*i));
-	        	temp.add(0.99d+(10*i));
-	        	
-	        	//304.0,7.753805774278234,85.25301837270358,0.9976377952755906
-	        	//1893.0,8.39816272965878,84.90971128608982,0.9989501312335956,-439.68162760416647
-	        	//16.0,3.3568105065666067,80.79954971857391,2.2144090056285055,-616.2817361111117
-	      
-	        	temp2.add(10000d);
-	        	temp2.add(7.75d);
-	        	temp2.add(85.25d);
-	        	temp2.add(0.99d);
-	        	
-	        	one.add(temp);
-	        	two.add(temp2);
-	        }
-	        
-	        List<Double> oneAns = new ArrayList<>();
-	        List<Double> twoAns = new ArrayList<>();
 	        
 	        PredictionModel m = new PredictionModel("params");
 	        
-	        for(List<Double> lst : one) {
-	        	oneAns.add(m.makePrediction(lst));
-	        }
-	        
-	        for(List<Double> lst : two) {
-	        	twoAns.add(m.makePrediction(lst));
-	        }
-
-	        
-			BorderPane leftPane = new Graph("traffic", "Strain %", oneAns, oneAns.size(),1);
-			BorderPane rightPane = new Graph("traffic", "Strain %", twoAns, twoAns.size(),1);
-			//BorderPane rightPane = new Graph("years", "Strain %", "Lifespan", one, two, (one.size() > two.size()) ? one.size() : two.size(),1);
-	        
-	       
-	        
-	        //CHARTS PANE
-	        SplitPane charts = new SplitPane();
-	        charts.getItems().addAll(leftPane, rightPane);
-	        charts.setDividerPositions(0.5);
-	        charts.maxWidthProperty().multiply(0.25);
-	        leftPane.maxWidthProperty().bind(charts.widthProperty().multiply(0.5));
-	        leftPane.minWidthProperty().bind(charts.widthProperty().multiply(0.5));
-	        
-	        
 	        //SET SLIDERS
 	        String fileSliderKNMI = "src/data/KNMIPrediction2050.csv";
-	        String fileSliderData = "src/data/KNMIPrediction2050.csv"; //DataMinMaxValues.csv;
-	        String[] slidersArr1 = {"Time (yrs)","Traffic","Temperature (C)", "Humidity (%)", "Wind (m/s)"};
-	        CustomSlider slider1 = new CustomSlider(slidersArr1,fileSliderKNMI);
-	        String[] slidersArr2 = {"Temperature (C)","Wind (m/s)", "Humidity (%)" };
-	        CustomSlider slider2 = new CustomSlider(slidersArr2,fileSliderData);
+	        String fileSliderData = "src/data/DataMinMaxValues.csv"; //DataMinMaxValues.csv;
+	        String[] slidersArr1 = {"Time (yrs)","Traffic Weigth","Temperature (C)", "Humidity (%)", "Wind (m/s)"};
+	        CustomSliders slidersLeft = new CustomSliders(slidersArr1,fileSliderKNMI);
+	        String[] slidersArr2 = {"Temperature (C)", "Humidity (%)","Wind (m/s)"};
+	        CustomSliders slidersRight = new CustomSliders(slidersArr2,fileSliderData);
 	        
 	        SplitPane sliders = new SplitPane();
-	        sliders.getItems().addAll(slider1, slider2);
+	        sliders.getItems().addAll(slidersLeft, slidersRight);
 	        sliders.setDividerPositions(0.5);
 	        sliders.maxWidthProperty().multiply(0.25);
-	        slider1.maxWidthProperty().bind(charts.widthProperty().multiply(0.5));
-	        slider2.minWidthProperty().bind(charts.widthProperty().multiply(0.5));
+	        slidersLeft.maxWidthProperty().bind(sliders.widthProperty().multiply(0.5));
+	        slidersRight.minWidthProperty().bind(sliders.widthProperty().multiply(0.5));
+	        
+	        // INITIALIZE DATA IN GRAPHS
+	        
+	        //YEARS
+	        for(int i = 0; i < slidersLeft.getChildren().size()-1; i++) {
+	        	if(slidersLeft.getChildren().get(i) instanceof Slider) {
+	        		Slider s = (Slider)slidersLeft.getChildren().get(i);
+	        		inputYears.put(s, s.getValue());
+	        	}
+	        }
+	        for(int year = START_YEAR; year < START_YEAR+MAX_YEARS; year+=YEARS_INCREMENT) {
+	        	List<Double> temp = new ArrayList<Double>(inputYears.values());
+	        	outputYears.put(year, m.makePrediction(temp));
+	        }
+	        List<Double> initYears = new ArrayList<Double>(outputYears.values());
+	       
+	        
+	        //TRAFFIC
+	        for(int i = 0; i < slidersRight.getChildren().size(); i++) {
+	        	if(slidersRight.getChildren().get(i) instanceof Slider) {
+	        		Slider s = (Slider)slidersRight.getChildren().get(i);
+	        		inputTraffic.put(s, s.getValue());
+	        	}
+	        }
+	        for(int traffic = START_TRAFFIC; traffic < START_TRAFFIC+MAX_TRAFFIC; traffic+=TRAFFIC_INCREMENT) {
+	        	System.out.println(traffic);
+	        	List<Double> temp = new ArrayList<Double>(inputTraffic.values());
+	        	
+	        	List<Double> temp2 = new ArrayList<Double>();
+	        	temp2.add((double)traffic*500);
+	        	for(double t : temp) {
+	        		temp2.add(t);
+	        	}
+	        	System.out.println(temp2.size() + "SIZE");
+	        	outputTraffic.put(traffic, m.makePrediction(temp2));
+	        }
+	        List<Double> initTraffic = new ArrayList<Double>(outputTraffic.values());
+	        
+	        
+	        
+	        //SET GRAPHS WITH DATA
+	        
+	        Graph leftPane = new Graph("Years Passed", "Strain %", "Lifespan", initYears, initYears, START_YEAR,MAX_YEARS,YEARS_INCREMENT);
+	     	Graph rightPane = new Graph("Traffic Weigth x50", "Strain %", initYears, START_TRAFFIC, MAX_TRAFFIC,TRAFFIC_INCREMENT);
+	     	
+	     	// SET EVENTS
+	     	
+	     	yearSlider = (Slider)slidersLeft.getChildren().get(slidersLeft.getChildren().size()-1);
+	     	yearSlider.setOnMouseReleased( e -> {
+	     		currentYear = (int) yearSlider.getValue();
+	     		System.out.println(currentYear);
+        	});
+	     	
+	     	for(Slider s : inputYears.keySet()) {
+	        	s.setOnMouseReleased( new GraphEventHandler(leftPane) {
+	        		@Override
+	        	    public void handle(Event event) {
+	        			inputYears.put(s,s.getValue());
+		        		List<Double> temp = new ArrayList<Double>(inputYears.values());
+			        	outputYears.put(currentYear, m.makePrediction(temp));
+			        	List<Double> temp2 = new ArrayList<Double>(outputYears.values());
+			        	System.out.println(temp2);
+			        	Graph a = getGraph();
+			        	a.updateData(temp2);
+	        	    }
+	        	});
+	        }
+	     	
+	     	for(Slider s : inputTraffic.keySet()) {
+	        	s.setOnMouseReleased( new GraphEventHandler(rightPane) {
+	        		@Override
+	        	    public void handle(Event event) {
+	        			inputTraffic.put(s,s.getValue());
+		        		List<Double> temp = new ArrayList<Double>(inputTraffic.values());
+		        		for(int traffic = START_TRAFFIC; traffic < START_TRAFFIC+MAX_TRAFFIC; traffic+=TRAFFIC_INCREMENT) {
+		        			List<Double> temp2 = new ArrayList<Double>();
+		    	        	temp2.add((double)traffic*50);
+		    	        	for(double t : temp) {
+		    	        		temp2.add(t);
+		    	        	}
+		        			outputYears.put(traffic, m.makePrediction(temp2));
+		        		}
+			        	List<Double> temp3 = new ArrayList<Double>(outputTraffic.values());
+			        	System.out.println(temp3);
+			        	Graph a = getGraph();
+			        	a.updateData(temp3);
+	        	    }
+	        	});
+	        }
+	     	
+	     	        //CHARTS PANE
+	     	SplitPane charts = new SplitPane();
+	     	charts.getItems().addAll(leftPane, rightPane);
+	     	charts.setDividerPositions(0.5);
+	     	charts.maxWidthProperty().multiply(0.25);
+	     	leftPane.maxWidthProperty().bind(charts.widthProperty().multiply(0.5));
+	     	leftPane.minWidthProperty().bind(charts.widthProperty().multiply(0.5));
 	        
 	        //SET ROOT PANE
 	        root.setCenter(charts);
@@ -151,4 +225,17 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
+}
+
+abstract class GraphEventHandler implements EventHandler<Event>
+{
+    private Graph g;
+
+    public GraphEventHandler(Graph g) {
+        this.g = g;
+    }
+
+    public Graph getGraph() {
+        return g;
+    }
 }
