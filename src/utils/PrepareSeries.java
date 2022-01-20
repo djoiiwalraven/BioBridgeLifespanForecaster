@@ -22,7 +22,19 @@ public class PrepareSeries {
 		 series.setName(name);
 		 for (int i = 0; i < data.size() && i < limit; i++) {
 			 XYChart.Data<Number,Number> dataPoint = new XYChart.Data<Number,Number>(i,data.get(i));
-			 dataPoint.setNode(new Circle(5, cl));
+			 //dataPoint.setNode(new Circle(5, cl));
+			 
+			 series.getData().add(dataPoint);
+		 }
+		 return series;
+	 }
+	 
+	 public static XYChart.Series<Number, Number> dataPoints(String name, double[] data, int limit, Color cl){
+		 XYChart.Series<Number, Number> series = new XYChart.Series<>();
+		 series.setName(name);
+		 for (int i = 0; i < data.length && i < limit; i++) {
+			 XYChart.Data<Number,Number> dataPoint = new XYChart.Data<Number,Number>(i,data[i]);
+			 //dataPoint.setNode(new Circle(5, cl));
 			 series.getData().add(dataPoint);
 		 }
 		 return series;
