@@ -1,18 +1,6 @@
 package domain;
 
-import java.util.List;
-
-import org.apache.commons.csv.CSVRecord;
-
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-
-import javafx.scene.layout.GridPane;
-
-import utils.ReadCSV;
 
 public class CustomSlider extends Slider{
 	

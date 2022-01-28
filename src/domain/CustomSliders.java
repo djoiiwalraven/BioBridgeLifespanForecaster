@@ -9,11 +9,9 @@ import org.apache.commons.csv.CSVRecord;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
 
 import javafx.scene.layout.GridPane;
-
-import utils.ReadCSV;
+import utils.CSVHandler;
 
 
 public class CustomSliders extends GridPane  {
@@ -28,7 +26,7 @@ public class CustomSliders extends GridPane  {
 	    this.setPadding(new Insets(25));
 	    this.setAlignment(Pos.TOP_LEFT);
 	    
-	  	this.values = ReadCSV.returnAsList(file,',',1,true);
+	  	this.values = CSVHandler.returnAsList(file,',',1,true);
 	  	this.stringLabels = stringLabels;
 	  	this.labels = new ArrayList<Label>();
 	  	

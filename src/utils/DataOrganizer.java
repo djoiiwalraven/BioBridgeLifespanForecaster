@@ -1,16 +1,30 @@
 package utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
-public class OrganizeData {
+public class DataOrganizer {
+	
+	public static double calcSMA(double[] input) {
+		double movingAverage = 0;
+		
+		for(double i : input) {
+			movingAverage += i;
+		}
+		movingAverage /= input.length;
+		
+		return movingAverage;
+	}
 	
 	public static void removeNaN() {
 		List<List<String>> org = new ArrayList<List<String>>();
@@ -23,7 +37,7 @@ public class OrganizeData {
 		}
 		org.add(headers);
 				
-		for(CSVRecord strain: ReadCSV.returnAsList("/Volumes/MacOS/PAD/data/DateCombinedStrainWNaN.csv", ',', 0,  true)) {
+		for(CSVRecord strain: CSVHandler.returnAsList("/Volumes/MacOS/PAD/data/DateCombinedStrainWNaN.csv", ',', 0,  true)) {
 			//System.out.println(strain);
 			if(!strain.get(1).equals("NaN")) {
 				List<String> temp = new ArrayList<String>();
@@ -33,7 +47,7 @@ public class OrganizeData {
 			}
 		}
 		String[][] arr = org.stream().map(u -> u.toArray(new String[0])).toArray(String[][]::new);
-		WriteCSV.write("/Volumes/MacOS/PAD/data", "DateCombinedStrainReduced",arr);
+		CSVHandler.write("/Volumes/MacOS/PAD/data", "DateCombinedStrainReduced",arr);
 		System.out.println("FINSIHED");
 	}
 	
@@ -48,15 +62,15 @@ public class OrganizeData {
 		}
 		org.add(headers);
 		
-		List<CSVRecord> strains = ReadCSV.returnAsList("/Volumes/MacOS/PAD/data/DateCombinedStrainReduced.csv", ',', 0,  false);
+		List<CSVRecord> strains = CSVHandler.returnAsList("/Volumes/MacOS/PAD/data/DateCombinedStrainReduced.csv", ',', 0,  false);
 		
 		int count = 0;
 		for(CSVRecord strain : strains) {
 			count++;
 			System.out.println(count*100/strains.size() + "%");
 			String currentTime = strain.get(0);
-			for(CSVRecord meta : ReadCSV.returnAsList("/Volumes/MacOS/PAD/data/organizedData.csv", ',', 0,true)) {
-				if(currentTime.equals(DateCalc.returnDateTime(meta.get(0)))){
+			for(CSVRecord meta : CSVHandler.returnAsList("/Volumes/MacOS/PAD/data/organizedData.csv", ',', 0,true)) {
+				if(currentTime.equals(DateCalculator.returnDateTime(meta.get(0)))){
 					//System.out.println(meta.get(0));
 					List<String> temp = new ArrayList<String>();
 					temp.add(strain.get(0)); //date
@@ -71,7 +85,7 @@ public class OrganizeData {
 		}
 		
 		String[][] arr = org.stream().map(u -> u.toArray(new String[0])).toArray(String[][]::new);
-		WriteCSV.write("/Volumes/MacOS/PAD/data", "fullyOrganized",arr);
+		CSVHandler.write("/Volumes/MacOS/PAD/data", "fullyOrganized",arr);
 		System.out.println("FINSIHED");
 		//List<CSVRecord> rec = ReadCSV.returnAsList("/Volumes/MacOS/PAD/data/organizedData.csv",',',0,true);
 	}
@@ -87,10 +101,10 @@ public class OrganizeData {
 		}
 		org.add(headers);
 		
-		for(CSVRecord meteo : ReadCSV.returnAsList("/Volumes/MacOS/PAD/data/meteo/reducedMeteo.csv", ',', 0,  true)) {
-			String currentTime = DateCalc.returnDateTime(meteo.get(0));
-			for(CSVRecord traffic : ReadCSV.returnAsList("/Volumes/MacOS/PAD/data/traffic/verkeer.csv", ';', 0,true)) {
-				if(currentTime.equals(DateCalc.returnDateTime(traffic.get(0)))){
+		for(CSVRecord meteo : CSVHandler.returnAsList("/Volumes/MacOS/PAD/data/meteo/reducedMeteo.csv", ',', 0,  true)) {
+			String currentTime = DateCalculator.returnDateTime(meteo.get(0));
+			for(CSVRecord traffic : CSVHandler.returnAsList("/Volumes/MacOS/PAD/data/traffic/verkeer.csv", ';', 0,true)) {
+				if(currentTime.equals(DateCalculator.returnDateTime(traffic.get(0)))){
 					System.out.println(traffic.get(0));
 					List<String> temp = new ArrayList<String>();
 					temp.add(traffic.get(0));
@@ -108,8 +122,8 @@ public class OrganizeData {
 		}
 		
 		String[][] arr = org.stream().map(u -> u.toArray(new String[0])).toArray(String[][]::new);
-		WriteCSV.write("/Volumes/MacOS/PAD/data", "organizedData",arr);
-		List<CSVRecord> rec = ReadCSV.returnAsList("/Volumes/MacOS/PAD/data/organizedData.csv",',',0,true);
+		CSVHandler.write("/Volumes/MacOS/PAD/data", "organizedData",arr);
+		//List<CSVRecord> rec = CSVHandler.returnAsList("/Volumes/MacOS/PAD/data/organizedData.csv",',',0,true);
 	}
 	
 	public static void reduceMeteoToHours(char seperator, int notAllowedEmpty, boolean hasHeader) {
@@ -134,13 +148,13 @@ public class OrganizeData {
 			double wind = 0;
 			int avgCounter = 0;
 			
-			for(CSVRecord record : (hasHeader == true) ? ReadCSV.skipFirst(records) : records) {
+			for(CSVRecord record : (hasHeader == true) ? CSVHandler.skipFirst(records) : records) {
 				if(record.get(notAllowedEmpty) != "") {
-					int current = DateCalc.returnHour(record.get(0));
+					int current = DateCalculator.returnHour(record.get(0));
 					
 					if(previous < 0) {
 						previous = current;
-						currentDate = DateCalc.returnDateTime(record.get(0));
+						currentDate = DateCalculator.returnDateTime(record.get(0));
 						System.out.println(currentDate);
 					}
 					if(current != previous) {
@@ -154,7 +168,7 @@ public class OrganizeData {
 						tempRec.add(String.valueOf((Double)wind));
 						tempList.add(tempRec);
 						previous = current;
-						currentDate = DateCalc.returnDateTime(record.get(0));
+						currentDate = DateCalculator.returnDateTime(record.get(0));
 						temp = 0;
 						rain = 0;
 						wind = 0;
@@ -180,9 +194,97 @@ public class OrganizeData {
 			tempList.add(tempRec);
 			
 			String[][] arr = tempList.stream().map(u -> u.toArray(new String[0])).toArray(String[][]::new);
-			WriteCSV.write("/Volumes/MacOS/PAD/data/meteo", "reducedMeteo", arr);
+			CSVHandler.write("/Volumes/MacOS/PAD/data/meteo", "reducedMeteo", arr);
 		} catch(IOException ex) {
 			ex.printStackTrace();
 		}
+	}
+	
+	//TOM's
+	
+	public static void combined(String file1,String file2) {
+		List<List<String>> org = new ArrayList<List<String>>();
+		List<String> headers = new ArrayList<String>();
+		
+		// Date;Traffic;Temperature;Humidity;Wind;
+		String[] header = {"DateTime","Average Strain"};
+		for(String str: header) {
+			headers.add(str);
+		}
+		org.add(headers);
+		for(CSVRecord strain1:CSVHandler.returnAsList(file1, ',', 0,true)) {
+			String currentTime = strain1.get(0);
+			for(CSVRecord strain2:CSVHandler.returnAsList(file2, ',', 0,true)) {
+				if(currentTime.equals(strain2.get(0))){
+					List<String> temp = new ArrayList<String>();
+					temp.add(strain2.get(0));
+					double avgStrain= 0;
+					avgStrain += (Double.parseDouble(strain2.get(1))+Double.parseDouble(strain1.get(1)))/2;
+					
+					temp.add(String.valueOf(avgStrain));
+					org.add(temp);
+				}
+			}
+		}
+		String[][] arr = org.stream().map(u -> u.toArray(new String[0])).toArray(String[][]::new);
+		CSVHandler.write("./data/", "vastLine5",arr);
+	}
+	
+	public static void reduceStrainHours(String file) {
+		List<List<String>> tempList = new ArrayList<List<String>>();
+		List<String> headers = new ArrayList<String>();
+		
+		String[] header = {"DateTime","Strain/Waarde"};
+		for(String str: header) {
+			headers.add(str);
+		}
+		tempList.add(headers);
+		try {
+			CSVParser parser=CSVParser.parse(new File(file), StandardCharsets.UTF_8,
+			        CSVFormat.DEFAULT.withFirstRecordAsHeader().withDelimiter(';').withTrim().withNullString(""));
+			int previous= -1;
+			
+			String currentdate="";
+			double strain=0;
+			int avgCounter=0;
+			
+			
+			for(CSVRecord r:parser) {
+				int current = DateCalculator.returnHour(r.get(0));
+				
+				if(previous<0) {
+					previous=current;
+					currentdate = DateCalculator.returnDateTime(r.get(0));
+				}
+				
+				if(current!= previous) {
+					List<String> tempRec =new ArrayList<String>();
+					strain /=avgCounter;
+					tempRec.add(currentdate);
+					tempRec.add(String.valueOf((Double)strain));
+					tempList.add(tempRec);
+					previous=current;
+					currentdate=DateCalculator.returnDateTime(r.get(0));
+					strain=0;
+					avgCounter = 0;
+				
+				}
+				if(current==previous) {
+					strain += Double.parseDouble(r.get(2).replace(",","."));
+					avgCounter++;
+				}
+			}
+			List<String> tempRec = new ArrayList<String>();
+			strain /=avgCounter;
+			tempRec.add(currentdate);
+			tempRec.add(String.valueOf((Double)strain));
+			tempList.add(tempRec);
+			
+			String[][] arr = tempList.stream().map(u -> u.toArray(new String[0])).toArray(String[][]::new);
+			CSVHandler.write("./data/","reducedStrain20714", arr);
+		}catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		
 	}
 }

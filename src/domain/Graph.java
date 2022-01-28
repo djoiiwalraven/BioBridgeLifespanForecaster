@@ -6,8 +6,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
-import model.PredictionModel;
-import utils.PrepareSeries;
+import utils.LineChartSerieHandler;
 
 public class Graph extends BorderPane {
 	
@@ -124,23 +123,23 @@ public Graph(String xname, String yname, String yname2, double[] data, double[] 
 	
 	public void updateData(List<Double> data){
 		baseChart.getData().clear();
-		baseChart.getData().add(PrepareSeries.dataPoints(yname, data, DATA_LENGTH, Color.RED));
+		baseChart.getData().add(LineChartSerieHandler.dataPoints(yname, data, DATA_LENGTH, Color.RED));
 	}
 	
 	public void updateData(List<Double> data, List<Double> data2){
 		baseChart.getData().clear();
-		baseChart.getData().add(PrepareSeries.dataPoints(yname, data, DATA_LENGTH, Color.RED));
-        bonusChart.addSeries(PrepareSeries.dataPoints(yname2, data2, DATA_LENGTH, Color.BLUE),Color.BLUE);
+		baseChart.getData().add(LineChartSerieHandler.dataPoints(yname, data, DATA_LENGTH, Color.RED));
+        bonusChart.addSeries(LineChartSerieHandler.dataPoints(yname2, data2, DATA_LENGTH, Color.BLUE),Color.BLUE);
 	}
 	
 	public void updateData(double[] data){
 		baseChart.getData().clear();
-		baseChart.getData().add(PrepareSeries.dataPoints(yname, data, DATA_LENGTH, Color.RED));
+		baseChart.getData().add(LineChartSerieHandler.dataPoints(yname, data, DATA_LENGTH, Color.RED));
 	}
 	
 	public void updateData(double[] data, double[] data2){
-		baseChart.getData().add(PrepareSeries.dataPoints(yname, data, DATA_LENGTH, Color.RED));
+		baseChart.getData().add(LineChartSerieHandler.dataPoints(yname, data, DATA_LENGTH, Color.RED));
 		baseChart.getData().clear();
-        bonusChart.addSeries(PrepareSeries.dataPoints(yname2, data2, DATA_LENGTH, Color.BLUE),Color.BLUE);
+        bonusChart.addSeries(LineChartSerieHandler.dataPoints(yname2, data2, DATA_LENGTH, Color.BLUE),Color.BLUE);
 	}
 }

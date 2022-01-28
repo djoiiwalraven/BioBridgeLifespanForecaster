@@ -1,28 +1,22 @@
 package utils;
 
-
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Scanner;
 
 import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 
-
-public class ReadCSV {
+public class CSVHandler {
 	
+	//READ
 	public static <T> Iterable<T> skipFirst(final Iterable<T> c) {
 	    return new Iterable<T>() {
 	        @Override public Iterator<T> iterator() {
@@ -84,7 +78,7 @@ public class ReadCSV {
 					double y = Double.parseDouble(record.get(2));
 					double z = Double.parseDouble(record.get(3));
 					double k = Double.parseDouble(record.get(4));
-					if(x <= 0 && y <= 0 && y <= 0 && k <= 0) {
+					if(x <= 0 && y <= 0 && z <= 0 && k <= 0) {
 						String a = record.get(0);
 						temp.add(a);
 					}
@@ -112,7 +106,7 @@ public class ReadCSV {
 				if(counter > 0) {
 					String test = record.get(valColumn);
 					String before = values.get(0);
-					if(DateCalc.isWithinRange(test, before)) {
+					if(DateCalculator.isWithinRange(test, before)) {
 						Double x = Double.parseDouble(record.get(column).replace(",", "."));
 						avg += x;
 						avgCounter++;
@@ -136,12 +130,11 @@ public class ReadCSV {
 			Reader reader= Files.newBufferedReader(Paths.get(file));// create reader to read files
 			Iterable<CSVRecord> records = CSVFormat.newFormat(seperator).parse(reader);// reads the file
 			int avgCounter = 0;
-			int counter = 0;
 			for(CSVRecord record: (header == true) ? skipFirst(records) : records) {
 				if(record.get(columns[0]) != "") {
 					String test = record.get(timeColumn);
 					String before = initTime;
-					if(DateCalc.isWithinRange(test, before)) {
+					if(DateCalculator.isWithinRange(test, before)) {
 						System.out.println(test);
 						for(int i = 0; i < columns.length; i++) {
 							averages[i] += Double.parseDouble(record.get(columns[i]).replace(",", "."));
@@ -176,6 +169,87 @@ public class ReadCSV {
 			ex.printStackTrace();
 		}
 	}
+	
+	//WRITE
+	
+	public static void write(String savePath, String name, String[] arr) {
+		String outputFile = savePath +"/" + name + ".csv";
+		
+		 try  {
+			 FileWriter writer = new FileWriter(outputFile);
+			 CSVPrinter printer = new CSVPrinter(writer, CSVFormat.EXCEL);
+			 
+			 for(String str : arr) {
+				 printer.print(str); 
+			 }
+			 printer.println();
+		     writer.flush();
+		     writer.close();
+		     printer.close();
+		 } catch (IOException ex) {
+		     ex.printStackTrace();
+		 }
+	}
+	
+	public static void write(String savePath, String name,String[][] arr) {
+		String outputFile = savePath +"/" + name + ".csv";
+		
+		 try  {
+			 FileWriter writer = new FileWriter(outputFile);
+			 CSVPrinter printer = new CSVPrinter(writer, CSVFormat.EXCEL);
+			 
+			 for(String[] x : arr) {
+				 for(String str: x) {
+					 printer.print(str);
+				 }
+				 printer.println();
+			 }
+		     writer.flush();
+		     writer.close();
+		     printer.close();
+		 } catch (IOException ex) {
+		     ex.printStackTrace();
+		 }
+	}
+	
+	public static void write(String savePath, String name, double[] arr) {
+		String outputFile = savePath +"/" + name + ".csv";
+		
+		 try  {
+			 FileWriter writer = new FileWriter(outputFile);
+			 CSVPrinter printer = new CSVPrinter(writer, CSVFormat.EXCEL);
+			 
+			 for(double d : arr) {
+				 printer.print(d); 
+			 }
+			 printer.println();
+		     writer.flush();
+		     writer.close();
+		     printer.close();
+		 } catch (IOException ex) {
+		     ex.printStackTrace();
+		 }
+	}
+	
+	public static void write(String savePath, String name, double[][] arr) {
+		String outputFile = savePath +"/" + name + ".csv";
+		
+		 try  {
+			 FileWriter writer = new FileWriter(outputFile);
+			 CSVPrinter printer = new CSVPrinter(writer, CSVFormat.EXCEL);
+			 
+			 for(double[] x : arr) {
+				 for(double d: x) {
+					 printer.print(d);
+				 }
+				 printer.println();
+			 }
+		     writer.flush();
+		     writer.close();
+		     printer.close();
+		 } catch (IOException ex) {
+		     ex.printStackTrace();
+		 }
+	}
+	
 }
-
-

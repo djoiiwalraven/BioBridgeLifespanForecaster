@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 
-import utils.ReadCSV;
+import utils.CSVHandler;
 
 public class PredictionModel {
 	private final static String path = "src/data";
@@ -14,10 +15,36 @@ public class PredictionModel {
 	
 	private List<Double> beta; //Weights finalized
 	
+	public static void writeParamsCSV(double[] y, double[][] x, String path, String fileName) {
+		OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
+		
+		
+		regression.newSampleData(y, x);
+		System.out.println(regression.calculateRSquared());
+		System.out.println(regression.calculateAdjustedRSquared());
+		
+		double[] beta = regression.estimateRegressionParameters();
+		double[] residuals = regression.estimateResiduals();
+		double[][] parametersVariance = regression.estimateRegressionParametersVariance();
+		double regressandVarience = regression.estimateRegressandVariance();
+		double stadnardErrors[] = regression.estimateRegressionParametersStandardErrors();
+		
+		System.out.println(residuals);
+		System.out.println(parametersVariance);
+		System.out.println(regressandVarience);
+		System.out.println(stadnardErrors);
+				
+		for(double d : beta) {
+			System.out.print(d + " - ");
+		}
+		System.out.println();
+		CSVHandler.write(path, fileName, beta );
+	}
+	
 	public PredictionModel(String fileName){
 		this.fileName = path+"/"+fileName + ".csv";
 		this.beta = new ArrayList<>();
-		CSVRecord temp = ReadCSV.returnAsList(this.fileName, ',', 0, false).get(0);
+		CSVRecord temp = CSVHandler.returnAsList(this.fileName, ',', 0, false).get(0);
 		for(String str : temp) {
 			this.beta.add(Double.valueOf(str));
 		}
@@ -25,8 +52,6 @@ public class PredictionModel {
 	
 	public double makePrediction(List<Double> values) {
 		double prediction = 0;
-		System.out.println(values.size() + "ROFL");
-		System.out.println(beta.size());
 		if(beta.size()-1 == values.size()) {
 			for(int i = 1; i < beta.size(); i++) {
 				prediction += (double)beta.get(i)*values.get(i-1);

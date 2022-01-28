@@ -129,7 +129,6 @@ public class Main extends Application {
 	        	}
 	        }
 	        for(int traffic = START_TRAFFIC; traffic < START_TRAFFIC+MAX_TRAFFIC; traffic+=TRAFFIC_INCREMENT) {
-	        	System.out.println(traffic);
 	        	List<Double> temp = new ArrayList<Double>(inputTraffic.values());
 	        	
 	        	List<Double> temp2 = new ArrayList<Double>();
@@ -137,7 +136,6 @@ public class Main extends Application {
 	        	for(double t : temp) {
 	        		temp2.add(t);
 	        	}
-	        	System.out.println(temp2.size() + "SIZE");
 	        	outputTraffic.put(traffic, m.makePrediction(temp2));
 	        }
 	        List<Double> initTraffic = new ArrayList<Double>(outputTraffic.values());
@@ -165,7 +163,6 @@ public class Main extends Application {
 		        		List<Double> temp = new ArrayList<Double>(inputYears.values());
 			        	outputYears.put(currentYear, m.makePrediction(temp));
 			        	List<Double> temp2 = new ArrayList<Double>(outputYears.values());
-			        	System.out.println(temp2);
 			        	Graph a = getGraph();
 			        	a.updateData(temp2);
 	        	    }
@@ -187,7 +184,6 @@ public class Main extends Application {
 		        			outputYears.put(traffic, m.makePrediction(temp2));
 		        		}
 			        	List<Double> temp3 = new ArrayList<Double>(outputTraffic.values());
-			        	System.out.println(temp3);
 			        	Graph a = getGraph();
 			        	a.updateData(temp3);
 	        	    }
@@ -229,7 +225,7 @@ public class Main extends Application {
 
 abstract class GraphEventHandler implements EventHandler<Event>
 {
-    private Graph g;
+	private Graph g;
 
     public GraphEventHandler(Graph g) {
         this.g = g;

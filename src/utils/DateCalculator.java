@@ -1,12 +1,11 @@
 package utils;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 
-public class DateCalc {
+
+public class DateCalculator {
 	public static boolean isWithinRange(String test, String before) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 		LocalDateTime testDate = LocalDateTime.parse(test.replace("Z", ""),formatter);
